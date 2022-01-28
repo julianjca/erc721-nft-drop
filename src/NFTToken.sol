@@ -31,14 +31,16 @@ contract NFTToken is ERC721 {
         baseURI = _baseURI;
     }
 
-    function mintNft(uint256 amount) external payable {
+    function mintNft(uint16 amount) external payable {
         if (totalSupply + amount > maxSupply) revert MaxSupplyReached();
-        if (msg.value != price) revert WrongEtherAmount();
+        if (msg.value < price * amount) revert WrongEtherAmount();
         if (amount > maxAmountPerTrx) revert MaxAmountPerTrxReached();
 
         unchecked {
             for (uint256 index = 0; index < amount; index++) {
-                _mint(msg.sender, totalSupply++);
+                uint256 tokenId = totalSupply + 1;
+                _mint(msg.sender, tokenId);
+                totalSupply++;
             }
         }
     }

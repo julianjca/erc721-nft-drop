@@ -5,6 +5,9 @@ import {DSTestPlus} from "./utils/DSTestPlus.sol";
 
 import {NFTToken} from "../NFTToken.sol";
 
+error MaxSupplyReached();
+error MaxAmountPerTrxReached();
+
 contract NFTTokenTest is DSTestPlus {
     NFTToken nftToken;
 
@@ -13,7 +16,13 @@ contract NFTTokenTest is DSTestPlus {
     }
 
     function testMint() public {
-        nftToken.mintNft{value: 0.3 ether}(2);
-        assertEq(nftToken.totalSupply(), 2);
+        nftToken.mintNft{value: nftToken.price() * 5}(5);
+        assertEq(nftToken.balanceOf(address(this)), 5);
+        assertEq(nftToken.totalSupply(), 5);
+    }
+
+    function testSingleMint() public {
+        nftToken.mintNft{value: nftToken.price() * 1}(1);
+        assertEq(nftToken.totalSupply(), 1);
     }
 }
