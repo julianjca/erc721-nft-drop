@@ -3,15 +3,18 @@ pragma solidity 0.8.11;
 
 import {ERC721} from "@solmate/tokens/ERC721.sol";
 import {Strings} from "@openzeppelin/utils/Strings.sol";
+import {Ownable} from "@openzeppelin/access/Ownable.sol";
+import {SafeTransferLib} from "@solmate/utils/SafeTransferLib.sol";
 
 error TokenDoesNotExist();
 error MaxSupplyReached();
 error WrongEtherAmount();
 error MaxAmountPerTrxReached();
+error NoEthBalance();
 
 /// @title NFTToken
 /// @author Julian <juliancanderson@gmail.com>
-contract NFTToken is ERC721 {
+contract NFTToken is ERC721, Ownable {
     using Strings for uint256;
 
     uint256 public totalSupply = 0;
@@ -26,9 +29,11 @@ contract NFTToken is ERC721 {
     constructor(
         string memory _name,
         string memory _symbol,
-        string memory _baseURI
+        string memory _baseURI,
+        address _vault
     ) ERC721(_name, _symbol) {
         baseURI = _baseURI;
+        vaultAddress = _vault;
     }
 
     function mintNft(uint16 amount) external payable {
@@ -43,6 +48,11 @@ contract NFTToken is ERC721 {
                 totalSupply++;
             }
         }
+    }
+
+    function withdraw() external onlyOwner {
+        if (address(this).balance == 0) revert NoEthBalance();
+        SafeTransferLib.safeTransferETH(vaultAddress, address(this).balance);
     }
 
     function tokenURI(uint256 tokenId)
