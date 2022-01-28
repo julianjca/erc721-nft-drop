@@ -14,7 +14,7 @@ error MaxAmountPerTrxReached();
 contract NFTToken is ERC721 {
     using Strings for uint256;
 
-    uint256 public totalSupply;
+    uint256 public totalSupply = 0;
     string public baseURI;
 
     uint256 public immutable maxSupply = 10000;
@@ -38,9 +38,7 @@ contract NFTToken is ERC721 {
 
         unchecked {
             for (uint256 index = 0; index < amount; index++) {
-                uint256 tokenId = totalSupply + 1;
-                _mint(msg.sender, tokenId);
-                totalSupply++;
+                _mint(msg.sender, totalSupply++);
             }
         }
     }
