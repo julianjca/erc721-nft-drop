@@ -27,19 +27,16 @@ contract NFTTokenTest is DSTestPlus {
     function testWithdraw() public {
         nftToken.mintNft{value: nftToken.price() * 1}(1);
         nftToken.withdraw();
-        assertEq(
-            address(0xeb2d7106A5728ACCBdBe380C152e2307a0Cc8FAf).balance,
-            0.15 ether
-        );
+        assertEq(address(nftToken.vaultAddress()).balance, 0.15 ether);
         assertEq(address(nftToken).balance, 0);
     }
 
-    function testMintMoreThanLimit() public {
-        // vm.expectRevert(abi.encodeWithSignature("MaxAmountPerTrxReached()"));
+    // function testMintMoreThanLimit() public {
+    //     // vm.expectRevert(abi.encodeWithSignature("MaxAmountPerTrxReached()"));
 
-        nftToken.mintNft{value: nftToken.price() * 8}(8);
-        assertEq(nftToken.totalSupply(), 8);
-    }
+    //     nftToken.mintNft{value: nftToken.price() * 8}(8);
+    //     assertEq(nftToken.totalSupply(), 8);
+    // }
 
     function testMintWithoutEtherValue() public {
         vm.expectRevert(abi.encodeWithSignature("WrongEtherAmount()"));
