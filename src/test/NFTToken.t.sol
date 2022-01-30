@@ -43,15 +43,15 @@ contract NFTTokenTest is DSTestPlus {
         nftToken.mintNft(1);
     }
 
-    // function testOutOfToken() public {
-    //     vm.store(
-    //         address(nftToken),
-    //         bytes32(uint256(7)),
-    //         bytes32(uint256(10000))
-    //     );
+    function testOutOfToken() public {
+        vm.store(
+            address(nftToken),
+            bytes32(uint256(7)),
+            bytes32(uint256(10000))
+        );
 
-    //     vm.expectRevert(abi.encodeWithSignature("MaxSupplyReached()"));
+        vm.expectRevert(abi.encodeWithSignature("MaxSupplyReached()"));
 
-    //     nftToken.mintNft{value: nftToken.price() * 5}(5);
-    // }
+        nftToken.mintNft{value: 0.15 ether}(1);
+    }
 }
