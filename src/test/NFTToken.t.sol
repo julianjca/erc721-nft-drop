@@ -31,12 +31,11 @@ contract NFTTokenTest is DSTestPlus {
         assertEq(address(nftToken).balance, 0);
     }
 
-    // function testMintMoreThanLimit() public {
-    //     // vm.expectRevert(abi.encodeWithSignature("MaxAmountPerTrxReached()"));
+    function testMintMoreThanLimit() public {
+        vm.expectRevert(abi.encodeWithSignature("MaxAmountPerTrxReached()"));
 
-    //     nftToken.mintNft{value: nftToken.price() * 8}(8);
-    //     assertEq(nftToken.totalSupply(), 8);
-    // }
+        nftToken.mintNft{value: 1.2 ether}(8);
+    }
 
     function testMintWithoutEtherValue() public {
         vm.expectRevert(abi.encodeWithSignature("WrongEtherAmount()"));
