@@ -5,19 +5,11 @@ import {DSTestPlus} from "./utils/DSTestPlus.sol";
 
 import {NFTToken} from "../NFTToken.sol";
 
-error MaxSupplyReached();
-error MaxAmountPerTrxReached();
-
 contract NFTTokenTest is DSTestPlus {
     NFTToken nftToken;
 
     function setUp() public {
-        nftToken = new NFTToken(
-            "My NFT",
-            "MNFT",
-            "https://",
-            0xeb2d7106A5728ACCBdBe380C152e2307a0Cc8FAf
-        );
+        nftToken = new NFTToken("My NFT", "MNFT", "https://");
     }
 
     function testMint() public {
@@ -41,4 +33,29 @@ contract NFTTokenTest is DSTestPlus {
         );
         assertEq(address(nftToken).balance, 0);
     }
+
+    function testMintMoreThanLimit() public {
+        // vm.expectRevert(abi.encodeWithSignature("MaxAmountPerTrxReached()"));
+
+        nftToken.mintNft{value: nftToken.price() * 8}(8);
+        assertEq(nftToken.totalSupply(), 8);
+    }
+
+    function testMintWithoutEtherValue() public {
+        vm.expectRevert(abi.encodeWithSignature("WrongEtherAmount()"));
+
+        nftToken.mintNft(1);
+    }
+
+    // function testOutOfToken() public {
+    //     vm.store(
+    //         address(nftToken),
+    //         bytes32(uint256(7)),
+    //         bytes32(uint256(10000))
+    //     );
+
+    //     vm.expectRevert(abi.encodeWithSignature("MaxSupplyReached()"));
+
+    //     nftToken.mintNft{value: nftToken.price() * 5}(5);
+    // }
 }

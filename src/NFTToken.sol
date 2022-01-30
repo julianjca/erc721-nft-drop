@@ -12,6 +12,7 @@ error WrongEtherAmount();
 error MaxAmountPerTrxReached();
 error NoEthBalance();
 
+/// @title ERC721 NFT Drop
 /// @title NFTToken
 /// @author Julian <juliancanderson@gmail.com>
 contract NFTToken is ERC721, Ownable {
@@ -24,22 +25,28 @@ contract NFTToken is ERC721, Ownable {
     uint256 public immutable price = 0.15 ether;
     uint256 public immutable maxAmountPerTrx = 5;
 
-    address public vaultAddress;
+    address public vaultAddress = 0x06f75da47a438f65b2C4cc7E0ee729d5C67CA174;
 
+    /*///////////////////////////////////////////////////////////////
+                               CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Creates an NFT Drop
+    /// @param _name The name of the token.
+    /// @param _symbol The Symbol of the token.
+    /// @param _baseURI The baseURI for the token that will be used for metadata.
     constructor(
         string memory _name,
         string memory _symbol,
-        string memory _baseURI,
-        address _vault
+        string memory _baseURI
     ) ERC721(_name, _symbol) {
         baseURI = _baseURI;
-        vaultAddress = _vault;
     }
 
-    function mintNft(uint16 amount) external payable {
+    function mintNft(uint256 amount) external payable {
+        if (amount > maxAmountPerTrx) revert MaxAmountPerTrxReached();
         if (totalSupply + amount > maxSupply) revert MaxSupplyReached();
         if (msg.value < price * amount) revert WrongEtherAmount();
-        if (amount > maxAmountPerTrx) revert MaxAmountPerTrxReached();
 
         unchecked {
             for (uint256 index = 0; index < amount; index++) {
