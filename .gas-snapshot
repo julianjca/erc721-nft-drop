@@ -1,0 +1,6 @@
+testMint() (gas: 181184)
+testMintMoreThanLimit() (gas: 11782)
+testMintWithoutEtherValue() (gas: 5720)
+testOutOfToken() (gas: 13078)
+testSingleMint() (gas: 80257)
+testWithdraw() (gas: 114676)
