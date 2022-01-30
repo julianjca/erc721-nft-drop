@@ -43,6 +43,12 @@ contract NFTToken is ERC721, Ownable {
         baseURI = _baseURI;
     }
 
+    /*///////////////////////////////////////////////////////////////
+                               MINT FUNCTION
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Mint NFT function.
+    /// @param amount Amount of token that the sender wants to mint.
     function mintNft(uint256 amount) external payable {
         if (amount > maxAmountPerTrx) revert MaxAmountPerTrxReached();
         if (totalSupply + amount > maxSupply) revert MaxSupplyReached();
@@ -57,6 +63,11 @@ contract NFTToken is ERC721, Ownable {
         }
     }
 
+    /*///////////////////////////////////////////////////////////////
+                            ETH WITHDRAWAL
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Withdraw all ETH from the contract to the vault addres.
     function withdraw() external onlyOwner {
         if (address(this).balance == 0) revert NoEthBalance();
         SafeTransferLib.safeTransferETH(vaultAddress, address(this).balance);
